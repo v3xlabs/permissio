@@ -13,7 +13,8 @@
         "lvksh"
     ],
     "env": {
-        "node": true
+        "node": true,
+        "jest/globals": true
     },
     "rules": {}
 }

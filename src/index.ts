@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 // eslint-disable-next-line prettier/prettier
 type __ValueOfArray<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<infer Type> ? Type : never;
 
@@ -20,6 +19,9 @@ export type PermissionTools<T extends string[]> = {
     fromBuffer(_: Buffer): PermissionSet<T>;
     fromBigint(_: bigint): PermissionSet<T>;
 };
+
+export type ExtractGeneric<T extends PermissionTools<any>> =
+    T extends PermissionTools<infer S> ? S : never;
 
 // idk, feels faster
 const BIG_ONE = BigInt(1);
@@ -76,7 +78,11 @@ export const generatePermissions = <T extends string[]>(
         for (const name of names)
             bits |= permissions[name as __ValueOfArray<T>];
 
-        return permissionSetFromBitsAndPermissions(permissionNames, permissions, bits);
+        return permissionSetFromBitsAndPermissions(
+            permissionNames,
+            permissions,
+            bits
+        );
     };
 
     const fromBuffer = (buffer: Buffer): PermissionSet<T> => {
@@ -87,11 +93,19 @@ export const generatePermissions = <T extends string[]>(
         for (let index = 0; index < view.length; index++)
             bits |= BigInt(view[index]) << BigInt(index * 8);
 
-        return permissionSetFromBitsAndPermissions(permissionNames, permissions, bits);
+        return permissionSetFromBitsAndPermissions(
+            permissionNames,
+            permissions,
+            bits
+        );
     };
 
     const fromBigint = (bigint: bigint): PermissionSet<T> =>
-        permissionSetFromBitsAndPermissions(permissionNames, permissions, bigint);
+        permissionSetFromBitsAndPermissions(
+            permissionNames,
+            permissions,
+            bigint
+        );
 
     return { createNew, fromBuffer, fromBigint };
 };
