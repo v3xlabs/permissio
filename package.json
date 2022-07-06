@@ -21,6 +21,6 @@
         "build": "tsc",
         "test": "jest --verbose --coverage",
         "lint": "eslint -c .eslintrc.json --ext .ts ./src ./tests",
-        "pub": "yarn publish --access public"
+        "pub": "pnpm publish"
     }
 }
