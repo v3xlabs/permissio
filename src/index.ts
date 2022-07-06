@@ -11,8 +11,7 @@ export const grantPermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
 ) => {
-    for (let index = 0; index <= permission.length; index++)
-        data |= convertToBit(permission[index]);
+    for (const perm of permission) data |= convertToBit(perm);
 
     return data;
 };
@@ -20,8 +19,7 @@ export const removePermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
 ) => {
-    for (let index = 0; index <= permission.length; index++)
-        data &= ~convertToBit(permission[index]);
+    for (const perm of permission) data &= ~convertToBit(perm);
 
     return data;
 };
