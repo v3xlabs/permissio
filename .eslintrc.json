@@ -16,5 +16,7 @@
         "node": true,
         "jest/globals": true
     },
-    "rules": {}
+    "rules": {
+        "unicorn/no-array-reduce": "off"
+    }
 }
