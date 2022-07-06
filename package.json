@@ -1,6 +1,5 @@
 {
     "name": "permissio",
-    "version": "0.0.1-beta.2",
     "main": "./lib/index.js",
     "author": "lvksh",
     "license": "LGPL-3.0",
