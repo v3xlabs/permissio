@@ -21,6 +21,6 @@
         "build": "tsc",
         "test": "jest --verbose --coverage",
         "lint": "eslint -c .eslintrc.json --ext .ts ./src ./tests",
-        "pub": "pnpm publish"
+        "pub": "pnpm publish --no-git-checks"
     }
 }
