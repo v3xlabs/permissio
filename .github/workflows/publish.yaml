@@ -19,9 +19,6 @@ jobs:
         with:
           version: 7
           run_install: false
-      - run: yarn
-      - name: Build
-        run: yarn build
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -41,7 +38,7 @@ jobs:
         run: pnpm build
 
       - name: Version
-        run: yarn version --new-version "${GITHUB_REF:11}" --no-git-tag-version
-      - run: yarn pub
+        run: pnpm version --new-version "${GITHUB_REF:11}" --no-git-tag-version
+      - run: pnpm pub
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
