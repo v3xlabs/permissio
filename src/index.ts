@@ -1,117 +1,58 @@
-type __ValueOfArray<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
-    infer Type
->
-    ? Type
-    : never;
+type PermissionData = bigint;
+type Permissions = number;
 
-export type PermissionSet<T extends string[]> = {
-    has(_: __ValueOfArray<T>): boolean;
-    grant(_: __ValueOfArray<T>): void;
-    remove(_: __ValueOfArray<T>): void;
-
-    toHumanReadable(): __ValueOfArray<T>[]; // this will not require all values from original array
-    toBigint(): bigint;
-    toBuffer(): Buffer;
-    toBitstring(): string;
-    toString(): string;
-};
-
-type Permissions<T extends string[]> = Record<__ValueOfArray<T>, bigint>;
-
-export type PermissionTools<T extends string[]> = {
-    createNew(..._: __ValueOfArray<T>[]): PermissionSet<T>;
-    fromBuffer(_: Buffer): PermissionSet<T>;
-    fromBigint(_: bigint): PermissionSet<T>;
-};
-
-export type ExtractGeneric<T extends PermissionTools<any>> =
-    T extends PermissionTools<infer S> ? S : never;
-
-// idk, feels faster
-const BIG_ONE = BigInt(1);
+export const EMPTY_PERMISSIONS = BigInt(0);
+export const convertToBit = (b: number | bigint) => BigInt(1) << BigInt(b);
+export const hasPermission = <K extends Permissions>(
+    data: PermissionData,
+    permission: K
+) => (data & convertToBit(permission)) > 0;
+export const grantPermission = <K extends Permissions>(
+    data: PermissionData,
+    ...permission: K[]
+) =>
+    permission.reduce(
+        (previous, current) => previous | convertToBit(current),
+        data
+    );
+export const removePermission = <K extends Permissions>(
+    data: PermissionData,
+    ...permission: K[]
+) =>
+    permission.reduce(
+        (previous, current) => (previous &= ~convertToBit(current)),
+        data
+    );
 const BIG_FF = BigInt(255);
 
-const bigintToBuffer = (bigint: bigint): Buffer => {
-    const length = (bigint.toString(2).length >> 3) + 1;
+export const toPermissionsBuffer = (data: PermissionData): Buffer => {
+    const length = (data.toString(2).length >> 3) + 1;
 
-    // realistically, length will never surpass the integer range
     const arrayBuffer = new ArrayBuffer(Number(length));
     const view = new Int8Array(arrayBuffer);
 
     for (let index = 0; index < length; index++)
-        view[index] = Number((bigint >> BigInt(index * 8)) & BIG_FF);
+        view[index] = Number((data >> BigInt(index * 8)) & BIG_FF);
 
     return Buffer.from(arrayBuffer);
 };
+export const toBitString = (data: PermissionData) => data.toString(2);
 
-// mhm yes, naming is definetely my strong suite
-const permissionSetFromBitsAndPermissions = <T extends string[]>(
-    permissionNames: T,
-    permissions: Permissions<T>,
-    bits: bigint
-): PermissionSet<T> => {
-    const has = (perm: __ValueOfArray<T>) => (bits & permissions[perm]) > 0;
-
+export const generatePermissions = (root: bigint) => {
     return {
-        has,
-        grant: (perm) => (bits |= permissions[perm]),
-        remove: (perm) => (bits &= ~(permissions[perm] as bigint)),
+        has: (permission: Permissions) => hasPermission(root, permission),
+        grant: (...permission: Permissions[]) => {
+            root = grantPermission(root, ...permission);
 
-        toHumanReadable: () =>
-            permissionNames.filter((name) =>
-                has(name as __ValueOfArray<T>)
-            ) as __ValueOfArray<T>[],
-        toBigint: () => bits,
-        toBuffer: () => bigintToBuffer(bits),
-        toBitstring: () => bits.toString(2),
-        toString: () => bits.toString(),
+            return root;
+        },
+        remove: (...permission: Permissions[]) => {
+            root = removePermission(root, ...permission);
+
+            return root;
+        },
+        toBuffer: () => toPermissionsBuffer(root),
+        toBitString: () => toBitString(root),
+        toString: () => root.toString(),
     };
-};
-
-// do not bad
-export const generatePermissions = <T extends string[]>(
-    ...permissionNames: T
-): PermissionTools<T> => {
-    let bit = BigInt(0);
-    const permissions: Permissions<T> = Object.assign(
-        {},
-        ...permissionNames.map((name) => ({ [name]: BIG_ONE << bit++ }))
-    );
-
-    const createNew = (...names: __ValueOfArray<T>[]): PermissionSet<T> => {
-        let bits = BigInt(0);
-
-        for (const name of names)
-            bits |= permissions[name as __ValueOfArray<T>];
-
-        return permissionSetFromBitsAndPermissions(
-            permissionNames,
-            permissions,
-            bits
-        );
-    };
-
-    const fromBuffer = (buffer: Buffer): PermissionSet<T> => {
-        const view = new Uint8Array(buffer);
-
-        let bits = BigInt(0);
-
-        for (let index = 0; index < view.length; index++)
-            bits |= BigInt(view[index]) << BigInt(index * 8);
-
-        return permissionSetFromBitsAndPermissions(
-            permissionNames,
-            permissions,
-            bits
-        );
-    };
-
-    const fromBigint = (bigint: bigint): PermissionSet<T> =>
-        permissionSetFromBitsAndPermissions(
-            permissionNames,
-            permissions,
-            bigint
-        );
-
-    return { createNew, fromBuffer, fromBigint };
 };
