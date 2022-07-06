@@ -10,19 +10,21 @@ export const hasPermission = <K extends Permissions>(
 export const grantPermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
-) =>
-    permission.reduce(
-        (previous, current) => previous | convertToBit(current),
-        data
-    );
+) => {
+    for (let index = 0; index <= permission.length; index++)
+        data |= convertToBit(permission[index]);
+
+    return data;
+};
 export const removePermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
-) =>
-    permission.reduce(
-        (previous, current) => previous & ~convertToBit(current),
-        data
-    );
+) => {
+    for (let index = 0; index <= permission.length; index++)
+        data &= ~convertToBit(permission[index]);
+
+    return data;
+};
 const BIG_FF = BigInt(255);
 
 export const toPermissionsBuffer = (data: PermissionData): Buffer => {
