@@ -47,7 +47,7 @@ pnpm add permissio
 
 ## Usage
 
-Using Permissio simplifies permission manipulation and storage through intelligent use of bitfields.
+Using Permissio simplifies permission manipulation and storage through the intelligent use of bitfields.
 
 At its core, you will be able to create an `enum` for your permissions, so long as the value of which is an integer.
 
