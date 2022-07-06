@@ -20,7 +20,7 @@ export const removePermission = <K extends Permissions>(
     ...permission: K[]
 ) =>
     permission.reduce(
-        (previous, current) => (previous &= ~convertToBit(current)),
+        (previous, current) => previous & ~convertToBit(current),
         data
     );
 const BIG_FF = BigInt(255);
@@ -36,21 +36,27 @@ export const toPermissionsBuffer = (data: PermissionData): Buffer => {
 
     return Buffer.from(arrayBuffer);
 };
+
+export const fromBuffer = (buffer: Buffer) => {
+    const view = new Uint8Array(buffer);
+
+    let bits = BigInt(0);
+
+    for (let index = 0; index < view.length; index++)
+        bits |= BigInt(view[index]) << BigInt(index * 8);
+
+    return bits;
+};
+
 export const toBitString = (data: PermissionData) => data.toString(2);
 
 export const generatePermissions = (root: bigint) => {
     return {
         has: (permission: Permissions) => hasPermission(root, permission),
-        grant: (...permission: Permissions[]) => {
-            root = grantPermission(root, ...permission);
-
-            return root;
-        },
-        remove: (...permission: Permissions[]) => {
-            root = removePermission(root, ...permission);
-
-            return root;
-        },
+        grant: (...permission: Permissions[]) =>
+            (root = grantPermission(root, ...permission)),
+        remove: (...permission: Permissions[]) =>
+            (root = removePermission(root, ...permission)),
         toBuffer: () => toPermissionsBuffer(root),
         toBitString: () => toBitString(root),
         toString: () => root.toString(),
