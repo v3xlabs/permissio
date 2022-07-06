@@ -81,7 +81,7 @@ console.log(hasPermission(steve, Permissions.USER_CREATE)); // false
 
 ### hasPermission
 
-Gathering wether permissiondata contains a certain permission is as easy as follows:
+Gathering whether permissiondata contains a certain permission is as easy as follows:
 
 ```ts
 hasPermission(steve, Permissions.USER_CREATE);
