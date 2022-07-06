@@ -1,5 +1,8 @@
-// eslint-disable-next-line prettier/prettier
-type __ValueOfArray<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<infer Type> ? Type : never;
+type __ValueOfArray<T extends ReadonlyArray<unknown>> = T extends ReadonlyArray<
+    infer Type
+>
+    ? Type
+    : never;
 
 export type PermissionSet<T extends string[]> = {
     has(_: __ValueOfArray<T>): boolean;

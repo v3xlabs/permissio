@@ -1,9 +1,12 @@
 {
-    "name": "permissions",
+    "name": "permissio",
     "version": "1.0.0",
     "main": "./lib/index.js",
     "author": "lvksh",
-    "license": "LGPL-3.0-or-later",
+    "license": "LGPL-3.0",
+    "files": [
+        "lib"
+    ],
     "devDependencies": {
         "@types/jest": "^28.1.3",
         "@types/node": "^18.0.0",
@@ -18,6 +21,7 @@
     "scripts": {
         "build": "tsc",
         "test": "jest --verbose --coverage",
-        "lint": "eslint -c .eslintrc.json --ext .ts ./src ./tests"
+        "lint": "eslint -c .eslintrc.json --ext .ts ./src ./tests",
+        "pub": "yarn publish --access public"
     }
 }
