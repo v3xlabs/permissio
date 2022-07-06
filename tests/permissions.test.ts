@@ -63,6 +63,26 @@ describe('instance methods', () => {
                 'generic-write',
             ]);
         });
+
+        it('should have an overriden toString', () => {
+            expect(user.toString()).toBe('3');
+        });
+    });
+});
+
+describe('mass testing', () => {
+    const allPermissions = Array.from({ length: 1e4 })
+        .fill(0)
+        .map((_, index) => `${index}`);
+
+    const massPermissions = generatePermissions(...allPermissions);
+
+    it('can create a user with a lot of permissions', () => {
+        const user = massPermissions.createNew(...allPermissions);
+
+        expect(user.toBigint()).toBe(
+            (BigInt(2) << BigInt(1e4 - 1)) - BigInt(1)
+        );
     });
 });
 

@@ -10,6 +10,7 @@ export type PermissionSet<T extends string[]> = {
     toBigint(): bigint;
     toBuffer(): Buffer;
     toBitstring(): string;
+    toString(): string;
 };
 
 type Permissions<T extends string[]> = Record<__ValueOfArray<T>, bigint>;
@@ -60,9 +61,11 @@ const permissionSetFromBitsAndPermissions = <T extends string[]>(
         toBigint: () => bits,
         toBuffer: () => bigintToBuffer(bits),
         toBitstring: () => bits.toString(2),
+        toString: () => bits.toString(),
     };
 };
 
+// do not bad
 export const generatePermissions = <T extends string[]>(
     ...permissionNames: T
 ): PermissionTools<T> => {
