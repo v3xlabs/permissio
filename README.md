@@ -5,6 +5,14 @@
   </picture>
 </p>
 
+<p align="center">
+<img src="https://img.shields.io/bundlephobia/min/permissio.svg" />
+<img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" />
+<img src="https://img.shields.io/github/languages/top/lvkdotsh/permissio" />
+<img src="https://img.shields.io/badge/dependencies-0-brightgreen.svg" />
+<img src="https://img.shields.io/npm/dt/permissio" />
+</p>
+
 ---
 
 A simplified general-purpose permissions system for node apps.
