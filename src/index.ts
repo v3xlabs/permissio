@@ -2,16 +2,16 @@ type PermissionData = bigint;
 type Permissions = number;
 
 export const EMPTY_PERMISSIONS = BigInt(0);
-export const PermissionsToBit = (b: number | bigint) => BigInt(1) << BigInt(b);
+export const permissionsToBit = (b: number | bigint) => BigInt(1) << BigInt(b);
 export const hasPermission = <K extends Permissions>(
     data: PermissionData,
     permission: K
-) => (data & PermissionsToBit(permission)) > 0;
+) => (data & permissionsToBit(permission)) > 0;
 export const grantPermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
 ) => {
-    for (const perm of permission) data |= PermissionsToBit(perm);
+    for (const perm of permission) data |= permissionsToBit(perm);
 
     return data;
 };
@@ -19,7 +19,7 @@ export const removePermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
 ) => {
-    for (const perm of permission) data &= ~PermissionsToBit(perm);
+    for (const perm of permission) data &= ~permissionsToBit(perm);
 
     return data;
 };
