@@ -128,7 +128,7 @@ const buffer = toPermissionsBuffer(permissionData);
 Likewise to [toPermissionsBuffer](#topermissionsbuffer) you can also get the permissiondata from a buffer:
 
 ```ts
-const permissionData = fromBuffer(buffer);
+const permissionData = fromPermissionsBuffer(buffer);
 ```
 
 ### toBitString
@@ -136,15 +136,15 @@ const permissionData = fromBuffer(buffer);
 Converting the permissiondata to bitstring is as easy as:
 
 ```ts
-const bitstring = toBitString(permissionData);
+const bitstring = toPermissionsBitString(permissionData);
 ```
 
 ### toString
 
-Converting the permissiondata to string is as easy as:
+Since permissionData is simply a BigInt, you can convert it to a string like so:
 
 ```ts
-const string = toString(permissionData);
+const string = permissionData.toString();
 ```
 
 ## Contributors
