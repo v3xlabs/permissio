@@ -22,5 +22,8 @@
         "test": "jest --verbose --coverage",
         "lint": "eslint -c .eslintrc.json --ext .ts ./src ./tests",
         "pub": "pnpm publish --no-git-checks"
+    },
+    "dependencies": {
+        "@jest/types": "^28.1.1"
     }
 }
