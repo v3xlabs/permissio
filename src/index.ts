@@ -2,16 +2,16 @@ type PermissionData = bigint;
 type Permissions = number;
 
 export const EMPTY_PERMISSIONS = BigInt(0);
-export const convertToBit = (b: number | bigint) => BigInt(1) << BigInt(b);
+export const permissionsToBit = (b: number | bigint) => BigInt(1) << BigInt(b);
 export const hasPermission = <K extends Permissions>(
     data: PermissionData,
     permission: K
-) => (data & convertToBit(permission)) > 0;
+) => (data & permissionsToBit(permission)) > 0;
 export const grantPermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
 ) => {
-    for (const perm of permission) data |= convertToBit(perm);
+    for (const perm of permission) data |= permissionsToBit(perm);
 
     return data;
 };
@@ -19,7 +19,7 @@ export const removePermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
 ) => {
-    for (const perm of permission) data &= ~convertToBit(perm);
+    for (const perm of permission) data &= ~permissionsToBit(perm);
 
     return data;
 };
@@ -37,7 +37,7 @@ export const toPermissionsBuffer = (data: PermissionData): Buffer => {
     return Buffer.from(arrayBuffer);
 };
 
-export const fromBuffer = (buffer: Buffer) => {
+export const fromPermissionsBuffer = (buffer: Buffer) => {
     const view = new Uint8Array(buffer);
 
     let bits = BigInt(0);
@@ -48,7 +48,7 @@ export const fromBuffer = (buffer: Buffer) => {
     return bits;
 };
 
-export const toBitString = (data: PermissionData) => data.toString(2);
+export const toPermissionsBitString = (data: PermissionData) => data.toString(2);
 
 export const generatePermissions = (root: bigint) => {
     return {
@@ -58,7 +58,7 @@ export const generatePermissions = (root: bigint) => {
         remove: (...permission: Permissions[]) =>
             (root = removePermission(root, ...permission)),
         toBuffer: () => toPermissionsBuffer(root),
-        toBitString: () => toBitString(root),
+        toBitString: () => toPermissionsBitString(root),
         toString: () => root.toString(),
     };
 };
