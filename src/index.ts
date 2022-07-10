@@ -51,7 +51,12 @@ export const fromPermissionsBuffer = (buffer: Buffer) => {
 export const toPermissionsBitString = (data: PermissionData) =>
     data.toString(2);
 
-export const createPermissions = (root: bigint = EMPTY_PERMISSIONS) => {
+export const createPermissions = <K extends Permissions>(
+    root: PermissionData = EMPTY_PERMISSIONS,
+    ...permission: K[]
+) => {
+    root = grantPermission(root, ...permission);
+
     return {
         has: (permission: Permissions) => hasPermission(root, permission),
         grant: (...permission: Permissions[]) =>
