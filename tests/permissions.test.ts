@@ -1,10 +1,10 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import {
+    createPermissions,
     EMPTY_PERMISSIONS,
     fromPermissionsBuffer,
     grantPermission,
     hasPermission,
-    newPermissions,
     PermissionCollection,
     PermissionData,
     removePermission,
@@ -19,7 +19,7 @@ it('exports', () => {
     expect(toPermissionsBuffer);
     expect(toPermissionsBitString);
     expect(fromPermissionsBuffer);
-    expect(newPermissions);
+    expect(createPermissions);
 });
 
 enum Permissions {
@@ -112,7 +112,7 @@ describe('non tree-shakeable testing', () => {
     let user: PermissionCollection;
 
     beforeEach(() => {
-        user = newPermissions();
+        user = createPermissions();
         user.grant(Permissions.READ);
         user.grant(Permissions.WRITE);
     });
