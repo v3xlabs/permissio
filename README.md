@@ -27,9 +27,10 @@ A simplified general-purpose permissions system for node apps.
   - [grantPermission](#grantpermission)
   - [removePermission](#removepermission)
   - [toPermissionsBuffer](#topermissionsbuffer)
-  - [fromBuffer](#frombuffer)
-  - [toBitString](#tobitstring)
+  - [fromPermissionsBuffer](#frompermissionsbuffer)
+  - [toPermissionsBitString](#topermissionsbitstring)
   - [toString](#tostring)
+  - [createPermissions](#createpermissions)
 - [Contributors](#contributors)
 - [LICENSE](#license)
 
@@ -123,7 +124,7 @@ When you want to convert your permission to a buffer you can do that as follows:
 const buffer = toPermissionsBuffer(permissionData);
 ```
 
-### fromBuffer
+### fromPermissionsBuffer
 
 Likewise to [toPermissionsBuffer](#topermissionsbuffer) you can also get the permissiondata from a buffer:
 
@@ -131,7 +132,7 @@ Likewise to [toPermissionsBuffer](#topermissionsbuffer) you can also get the per
 const permissionData = fromPermissionsBuffer(buffer);
 ```
 
-### toBitString
+### toPermissionsBitString
 
 Converting the permissiondata to bitstring is as easy as:
 
