@@ -1,4 +1,4 @@
-type PermissionData = bigint;
+export type PermissionData = bigint;
 type Permissions = number;
 
 export const EMPTY_PERMISSIONS = BigInt(0);
@@ -48,17 +48,26 @@ export const fromPermissionsBuffer = (buffer: Buffer) => {
     return bits;
 };
 
-export const toPermissionsBitString = (data: PermissionData) => data.toString(2);
+export const toPermissionsBitString = (data: PermissionData) =>
+    data.toString(2);
 
-export const generatePermissions = (root: bigint) => {
+export const createPermissions = <K extends Permissions>(
+    root: PermissionData = EMPTY_PERMISSIONS,
+    ...permission: K[]
+) => {
+    root = grantPermission(root, ...permission);
+
     return {
         has: (permission: Permissions) => hasPermission(root, permission),
         grant: (...permission: Permissions[]) =>
             (root = grantPermission(root, ...permission)),
         remove: (...permission: Permissions[]) =>
             (root = removePermission(root, ...permission)),
+        toBigint: () => root,
         toBuffer: () => toPermissionsBuffer(root),
         toBitString: () => toPermissionsBitString(root),
         toString: () => root.toString(),
     };
 };
+
+export type PermissionCollection = ReturnType<typeof createPermissions>;
