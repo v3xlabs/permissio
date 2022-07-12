@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./public/permissio_white.webp" />
-    <img alt="permissio" src="./public/permissio_black.webp" width="400px" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/lvkdotsh/permissio/raw/master/public/permissio_white.webp" />
+    <img alt="permissio" src="https://github.com/lvkdotsh/permissio/raw/master/public/permissio_black.webp" width="400px" />
   </picture>
 </p>
 
