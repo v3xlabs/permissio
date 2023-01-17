@@ -24,10 +24,16 @@ export const removePermission = <K extends Permissions>(
     return data;
 };
 const BIG_FF = BigInt(255);
+const BS_CUTOFF = BigInt(2) << BigInt(512);
+const HIGH_CUTOFF = BigInt(2) << (BigInt(2) << BigInt(15));
 
 const highestBitIndex = (x: bigint) => {
+    // toString, although being O(n), is faster for < ~512 permissions
+    if (x < BS_CUTOFF) return x.toString(2).length;
+
     let low = 0;
-    let high = Number.MAX_SAFE_INTEGER;
+    // slight performance optimization, will use a smaller high for < 2^15 permissions
+    let high = x > HIGH_CUTOFF ? Number.MAX_SAFE_INTEGER : 2 << 16;
 
     while (low < high) {
         const mid = Math.floor((high + low) / 2);
