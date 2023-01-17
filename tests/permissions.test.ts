@@ -30,6 +30,8 @@ enum Permissions {
 
 describe('basic functions', () => {
     let user: PermissionData;
+    let bigUser: PermissionData;
+    let antony: PermissionData;
 
     beforeEach(() => {
         user = grantPermission(
@@ -37,6 +39,9 @@ describe('basic functions', () => {
             Permissions.READ,
             Permissions.WRITE
         );
+
+        bigUser = grantPermission(EMPTY_PERMISSIONS, 1024);
+        antony = grantPermission(EMPTY_PERMISSIONS, 1_048_576);
     });
 
     describe('manipulating', () => {
@@ -65,6 +70,32 @@ describe('basic functions', () => {
         it('should export to Buffer', () => {
             expect(
                 Buffer.compare(toPermissionsBuffer(user), Buffer.from([0x3]))
+            ).toBe(0);
+        });
+
+        it('should export to Buffer (1024 permissions)', () => {
+            expect(
+                Buffer.compare(
+                    toPermissionsBuffer(bigUser),
+                    Buffer.from([
+                        ...(Array.from({ length: 128 }).fill(0) as number[]),
+                        1,
+                    ])
+                )
+            ).toBe(0);
+        });
+
+        it('should export to Buffer (2**30 permissions)', () => {
+            expect(
+                Buffer.compare(
+                    toPermissionsBuffer(antony),
+                    Buffer.from([
+                        ...(Array.from({ length: 131_072 }).fill(
+                            0
+                        ) as number[]),
+                        1,
+                    ])
+                )
             ).toBe(0);
         });
 

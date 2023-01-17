@@ -33,7 +33,7 @@ const highestBitIndex = (x: bigint) => {
 
     let low = 0;
     // slight performance optimization, will use a smaller high for < 2^15 permissions
-    let high = x > HIGH_CUTOFF ? Number.MAX_SAFE_INTEGER : 2 << 16;
+    let high = x > HIGH_CUTOFF ? 1 << 30 : 2 << 16;
 
     while (low < high) {
         const mid = Math.floor((high + low) / 2);
