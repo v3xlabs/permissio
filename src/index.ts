@@ -25,8 +25,25 @@ export const removePermission = <K extends Permissions>(
 };
 const BIG_FF = BigInt(255);
 
+const highestBitIndex = (x: bigint) => {
+    let low = 0;
+    let high = Number.MAX_SAFE_INTEGER;
+
+    while (low < high) {
+        const mid = Math.floor((high + low) / 2);
+
+        if (x >> BigInt(mid) > 0) {
+            low = mid + 1;
+        } else {
+            high = mid;
+        }
+    }
+
+    return high;
+};
+
 export const toPermissionsBuffer = (data: PermissionData): Buffer => {
-    const length = (data.toString(2).length >> 3) + 1;
+    const length = (highestBitIndex(data) >> 3) + 1;
 
     const arrayBuffer = new ArrayBuffer(Number(length));
     const view = new Int8Array(arrayBuffer);
