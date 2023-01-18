@@ -24,9 +24,32 @@ export const removePermission = <K extends Permissions>(
     return data;
 };
 const BIG_FF = BigInt(255);
+const BS_CUTOFF = BigInt(2) << BigInt(512);
+const HIGH_CUTOFF = BigInt(2) << (BigInt(2) << BigInt(15));
+
+const highestBitIndex = (x: bigint) => {
+    // toString, although being O(n), is faster for < ~512 permissions
+    if (x < BS_CUTOFF) return x.toString(2).length;
+
+    let low = 0;
+    // slight performance optimization, will use a smaller high for < 2^15 permissions
+    let high = x > HIGH_CUTOFF ? 1 << 30 : 2 << 16;
+
+    while (low < high) {
+        const mid = Math.floor((high + low) / 2);
+
+        if (x >> BigInt(mid) > 0) {
+            low = mid + 1;
+        } else {
+            high = mid;
+        }
+    }
+
+    return high;
+};
 
 export const toPermissionsBuffer = (data: PermissionData): Buffer => {
-    const length = (data.toString(2).length >> 3) + 1;
+    const length = (highestBitIndex(data) >> 3) + 1;
 
     const arrayBuffer = new ArrayBuffer(Number(length));
     const view = new Int8Array(arrayBuffer);
