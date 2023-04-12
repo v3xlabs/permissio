@@ -15,6 +15,35 @@ export const grantPermission = <K extends Permissions>(
 
     return data;
 };
+
+export const unionPermissions = (
+    dataFirst: PermissionData,
+    dataSecond: PermissionData
+) => {
+    return dataFirst | dataSecond;
+};
+
+export const intersectionPermissions = (
+    dataFirst: PermissionData,
+    dataSecond: PermissionData
+) => {
+    return dataFirst & dataSecond;
+};
+
+export const differencePermissions = (
+    dataFirst: PermissionData,
+    dataSecond: PermissionData
+) => {
+    return dataFirst ^ (dataFirst & dataSecond);
+};
+
+export const containsPermissions = (
+    dataFirst: PermissionData,
+    dataSecond: PermissionData
+) => {
+    return (dataFirst & dataSecond) === dataSecond;
+};
+
 export const removePermission = <K extends Permissions>(
     data: PermissionData,
     ...permission: K[]
