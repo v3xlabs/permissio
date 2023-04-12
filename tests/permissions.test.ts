@@ -1,15 +1,19 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import {
+    containsPermissions,
     createPermissions,
+    differencePermissions,
     EMPTY_PERMISSIONS,
     fromPermissionsBuffer,
     grantPermission,
     hasPermission,
+    intersectionPermissions,
     PermissionCollection,
     PermissionData,
     removePermission,
     toPermissionsBitString,
     toPermissionsBuffer,
+    unionPermissions,
 } from '../src';
 
 it('exports', () => {
@@ -17,6 +21,10 @@ it('exports', () => {
     expect(grantPermission);
     expect(removePermission);
     expect(toPermissionsBuffer);
+    expect(unionPermissions);
+    expect(intersectionPermissions);
+    expect(differencePermissions);
+    expect(containsPermissions);
     expect(toPermissionsBitString);
     expect(fromPermissionsBuffer);
     expect(createPermissions);
@@ -30,6 +38,7 @@ enum Permissions {
 
 describe('basic functions', () => {
     let user: PermissionData;
+    let secondUser: PermissionData;
     let bigUser: PermissionData;
     let antony: PermissionData;
 
@@ -38,6 +47,12 @@ describe('basic functions', () => {
             EMPTY_PERMISSIONS,
             Permissions.READ,
             Permissions.WRITE
+        );
+
+        secondUser = grantPermission(
+            EMPTY_PERMISSIONS,
+            Permissions.WRITE,
+            Permissions.EXEC
         );
 
         bigUser = grantPermission(EMPTY_PERMISSIONS, 1024);
@@ -63,6 +78,50 @@ describe('basic functions', () => {
             user = removePermission(user, Permissions.READ);
 
             expect(hasPermission(user, Permissions.READ)).toBe(false);
+        });
+    });
+
+    describe('combinations', () => {
+        it('should contain union', () => {
+            const unionUser = unionPermissions(user, secondUser);
+
+            expect(hasPermission(unionUser, Permissions.READ)).toBe(true);
+            expect(hasPermission(unionUser, Permissions.WRITE)).toBe(true);
+            expect(hasPermission(unionUser, Permissions.EXEC)).toBe(true);
+        });
+
+        it('should contain intersection', () => {
+            const intersectionUser = intersectionPermissions(user, secondUser);
+
+            expect(hasPermission(intersectionUser, Permissions.READ)).toBe(
+                false
+            );
+            expect(hasPermission(intersectionUser, Permissions.WRITE)).toBe(
+                true
+            );
+            expect(hasPermission(intersectionUser, Permissions.EXEC)).toBe(
+                false
+            );
+        });
+
+        it('should contain difference', () => {
+            const differenceUser = differencePermissions(user, secondUser);
+
+            expect(hasPermission(differenceUser, Permissions.READ)).toBe(true);
+            expect(hasPermission(differenceUser, Permissions.WRITE)).toBe(
+                false
+            );
+            expect(hasPermission(differenceUser, Permissions.EXEC)).toBe(false);
+        });
+
+        it('should contain', () => {
+            user = grantPermission(user, Permissions.EXEC);
+
+            expect(containsPermissions(user, secondUser)).toBe(true);
+        });
+
+        it('should not contain', () => {
+            expect(containsPermissions(user, secondUser)).toBe(false);
         });
     });
 
